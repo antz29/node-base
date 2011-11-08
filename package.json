@@ -1,17 +1,31 @@
 {
 	"author": "John Le Drew <jp@antz29.com> (http://antz29.com)",
 	"name": "base",
-	"description": "A lightweight micro web framework",
+	"description": "A lightweight micro web framework.",
 	"keywords": ["framework", "api", "web", "mvc", "extensible", "micro"],
-	"version": "0.0.1",
+	"version": "0.0.1dev",
 	"homepage": "http://base.antz29.com",
 	"repository": {
 		"type": "git",
 		"url": "git://github.com/antz29/node-base.git"
 	},
+   	"bugs": {
+        	"email": "base-bugs@antz29.com",
+	        "url": "http://github.com/antz29/node-base/issues"
+    	},
 	"engines": {
-		"node": "~0.4.9"
+		"node": ">=0.6.0"
 	},
-	"dependencies": {},
-	"devDependencies": {}
+	"directories": {
+        	"lib": "./src/lib"
+	},
+	"main" : "./src/lib/base.js",
+	"dependencies": {
+		"twister" : ">=0.2.0",
+		"slicer" : ">=0.2.0"
+	},
+	"devDependencies": {
+		"expresso" : ">=0.9.0",
+		"linter" : ">=0.0.7"
+	}
 }
