@@ -6,9 +6,10 @@
 
 ## What's it do?
 
-It's a lightweight, full stack web framework for NodeJS.
+It's a lightweight, full stack web framework for NodeJS that hooks into Connect.js
 
 ## Usage
+
 
 
 ## Rules
