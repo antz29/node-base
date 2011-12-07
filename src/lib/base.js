@@ -177,6 +177,7 @@ module.exports = (function() {
 					}(target,function(out) { callback(null,out); }));
 				}
 			}, function(err,data) {
+				if (!response.getHeader('content-type')) response.setHeader("content-type", "text/html");
 				res.end(data.view);
 			});
 
