@@ -159,9 +159,9 @@ module.exports = (function() {
 
 							tdata.controller  	= req.controller;
 							tdata.action 		= req.action;
-							tdata.layout		= tdata.layout || 'layout';
+							tdata._layout		= tdata._layout || 'layout';
 				
-							target = options.root + options.views + '/' + tdata.layout + '.' +  options.template_engine;
+							target = options.root + options.views + '/' + tdata._layout + '.' +  options.template_engine;
 
 							fs.readFile(target,"utf8", function(err,laydata) {
 								renderer(tmpdata, tdata, function(e,content) {
