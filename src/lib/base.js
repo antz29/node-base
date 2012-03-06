@@ -34,18 +34,20 @@ module.exports = (function() {
 		var that = this;
 		opt = opt || {};
 
+		var root = path.resolve(path.dirname(process.argv[1]));
+
 		console.log("Initializing Base...");
 		options = _.defaults(opt,{
-			'root' : path.resolve(path.dirname(process.argv[0])),
+			'root' : root,
 			'config' : '/config',
 			'controllers' : '/controllers',
 			'views' : '/views',
 			'models' : '/models'
 		});
 
-		configr.setDirectory(options.root + options.config);
-
 		console.log("Loading the configuration in " + options.root + options.config);
+		
+		configr.setDirectory(options.root + options.config);
 		configr.load(function() {
 			twister.addRules(configr.get().routes || []);
 
