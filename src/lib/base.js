@@ -88,7 +88,7 @@ module.exports = (function() {
 
 		function whenReady() {
 			
-			var tdata = {};
+			var tdata = req.template || {};
 
 			async.series({
 				'twister' : function(callback) {
@@ -128,7 +128,7 @@ module.exports = (function() {
 							}
 
 							controller_action(req,res,function(td) {
-								tdata = td;
+								tdata = _.extend(tdata, td);
 								callback(null);
 								process.nextTick(callPostAction);
 							}); 
