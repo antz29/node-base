@@ -111,42 +111,50 @@ module.exports = (function() {
 					fs.stat(target, function(err) {	
 						if (err) return callback(null);
 
-						controller = require(target);
-						controller.getBase = function() { return that; }
+						try {
+							controller = require(target);
 
-						callPreAction(function() {	
-							var method = req.method.toLowerCase();
-							var method_action = req.action + '_' + method;
-						
-							var controller_action;
-	
-							if (controller[method_action]) {
-								controller_action = controller[req.action + '_' + method];
-							}
-							else if (controller[req.action]) {
-								controller_action = controller[req.action];
+							controller.getBase = function() { return that; }
+
+							callPreAction(function() {
+								var method = req.method.toLowerCase();
+								var method_action = req.action + '_' + method;
+							
+								var controller_action;
+		
+								if (controller[method_action]) {
+									controller_action = controller[req.action + '_' + method];
+								}
+								else if (controller[req.action]) {
+									controller_action = controller[req.action];
+								}
+
+								controller_action(req,res,function(td) {
+									tdata = _.extend(tdata, td);
+									callback(null);
+									process.nextTick(callPostAction);
+								}); 
+							});
+
+							function callPreAction(callback) {
+								if (controller.pre_action) {
+									return controller.pre_action(req,res,callback);
+								}
+								callback();
 							}
 
-							controller_action(req,res,function(td) {
-								tdata = _.extend(tdata, td);
-								callback(null);
-								process.nextTick(callPostAction);
-							}); 
-						});
-
-						function callPreAction(callback) {
-							if (controller.pre_action) {
-								return controller.pre_action(req,res,callback);
+							function callPostAction() {
+								if (controller.post_action) { 
+									process.nextTick(function() {
+										controller.post_action(req);
+									});
+								}
 							}
-							callback();
 						}
-
-						function callPostAction() {
-							if (controller.post_action) { 
-								process.nextTick(function() {
-									controller.post_action(req);
-								});
-							}
+						catch (e) {
+							console.log('Error loading controller:\n', e);
+							res.statusCode = 500;
+							return res.end("<h1>500 Internal Server Error</h1>");
 						}
 					});
 				},
