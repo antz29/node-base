@@ -19,13 +19,14 @@
 	"directories": {
         	"lib": "./src/lib"
 	},
-	"main" : "./src/lib/base.js",
+	"main" : "./src/lib/base.coffee",
 	"dependencies": {
-		"twister" : ">=0.0.1",
-		"slicer" : ">=0.0.1",
-		"configr" : ">=0.0.1",
-		"underscore" : ">=0.0.1",
-		"async" : ">=0.0.1"
+		"coffee-script" : "*",
+		"twister" : "*",
+		"slicer" : "*",
+		"configr" : "*",
+		"underscore" : "*",
+		"async" : "*"
 	},
 	"devDependencies": {}
 }
