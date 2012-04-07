@@ -1,11 +1,14 @@
-fs  = require('fs')
-Configr = require('configr')
-Twister = require('twister')
-Slicer  = require('slicer')
-_   = require('underscore')
-async   = require('async')
-EventEmitter = require('events').EventEmitter
-path  = require('path')
+
+fs            = require('fs')
+Configr       = require('configr')
+Twister       = require('twister')
+Slicer        = require('slicer')
+_             = require('underscore')
+async         = require('async')
+EventEmitter  = require('events').EventEmitter
+path          = require('path')
+connect       = require('connect')
+http          = require('http');
 
 class Base extends EventEmitter
 
@@ -15,6 +18,8 @@ class Base extends EventEmitter
   twister = null
   slicer = null
   configr = null
+  pre = []
+  post = []
 
   constructor: (opt) ->
     opt = opt or {}
@@ -22,14 +27,20 @@ class Base extends EventEmitter
 
     console.log "Initializing Base..."
 
+    @connect = connect()
+
     @options = _.defaults(opt,{
       root: root,
       config: "/config",
       controllers: "/controllers",
       views: "/views",
       models: "/models",
-      template_engine: "jqtpl"
+      public: "/public",
+      template_engine: "jqtpl",
+      port: 3000
     })
+
+    pre = [connect.static("#{root}#{@options.public}"),connect.favicon()]
 
     @template_engines = {
       'jqtpl' : {
@@ -56,6 +67,9 @@ class Base extends EventEmitter
       user_engine = if configr.get().general then configr.get().general.template_engine else null
       @options.template_engine = if user_engine then user_engine else "jqtpl"
 
+      user_port = if configr.get().general then configr.get().general.port else null
+      @options.port = if user_port then user_port else 3000     
+
       engine = @template_engines[@options.template_engine].init()
       renderer = @template_engines[@options.template_engine].render 
 
@@ -63,7 +77,7 @@ class Base extends EventEmitter
       ready = true
 
       console.log "Base Framework is ready to accept requests!"
-  
+
   addTemplateEngine: (name,def) ->
     @template_engines[name] = def
 
@@ -160,7 +174,26 @@ class Base extends EventEmitter
         res.end data.view
       )
 
-  connect: ->
+  usePre: (module) ->
+    pre.push(module)
+
+  usePost: (module) ->
+    post.push(module)
+
+  go: ->
+    while (pre.length) 
+      @connect.use(pre.pop())
+
+    @connect.use this.request()
+
+    while (post.length) 
+      @connect.use pre.pop()
+
+    http.createServer(@connect).listen(@options.port);
+
+    console.log "Application listening on port #{@options.port}"
+
+  request: ->
     (req,res,next) => 
       this._processRequest req, res, next
   
