@@ -64,15 +64,6 @@ class Base extends EventEmitter
       slicer.addSegmentIdentifier 'controller','index'
       slicer.addSegmentIdentifier 'action','index'
 
-      user_engine = if configr.get().general then configr.get().general.template_engine else null
-      @options.template_engine = if user_engine then user_engine else "jqtpl"
-
-      user_port = if configr.get().general then configr.get().general.port else null
-      @options.port = if user_port then user_port else 3000     
-
-      engine = @template_engines[@options.template_engine].init()
-      renderer = @template_engines[@options.template_engine].render 
-
       this.emit 'ready'
       ready = true
 
@@ -181,6 +172,10 @@ class Base extends EventEmitter
     post.push(module)
 
   go: ->
+
+    engine = @template_engines[@options.template_engine].init()
+    renderer = @template_engines[@options.template_engine].render
+
     while (pre.length) 
       @connect.use(pre.pop())
 
