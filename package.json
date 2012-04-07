@@ -3,7 +3,7 @@
 	"name": "base",
 	"description": "A lightweight micro web framework that integrates with connect.js",
 	"keywords": ["framework", "api", "web", "mvc", "extensible", "micro", "connect"],
-	"version": "0.4.0",
+	"version": "0.4.1",
 	"homepage": "http://github.com/antz29/node-base",
 	"repository": {
 		"type": "git",
