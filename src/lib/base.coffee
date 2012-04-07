@@ -55,7 +55,10 @@ class Base extends EventEmitter
 
     console.log "Loading the configuration in #{@options.root}#{@options.config}..."
 
-    configr = new Configr("#{@options.root}#{@options.config}")
+    configr = new Configr
+      root : "#{@options.root}#{@options.config}"
+      language : @options.core_language
+      
     twister = new Twister()
     slicer = new Slicer()
 
@@ -173,7 +176,6 @@ class Base extends EventEmitter
     post.push(module)
 
   go: ->
-
     engine = @template_engines[@options.template_engine].init()
     renderer = @template_engines[@options.template_engine].render
 
