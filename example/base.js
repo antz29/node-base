@@ -8,4 +8,3 @@ var base = new Base({
 });
 
 base.go()
-

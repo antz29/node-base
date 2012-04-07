@@ -37,6 +37,7 @@ class Base extends EventEmitter
       models: "/models",
       public: "/public",
       template_engine: "jqtpl",
+      core_language: "js",
       port: 3000
     })
 
@@ -99,7 +100,7 @@ class Base extends EventEmitter
           callback null
 
         controller: (callback) =>
-          target = "#{@options.root}#{@options.controllers}/#{req.controller}.js"
+          target = "#{@options.root}#{@options.controllers}/#{req.controller}.#{@options.core_language}"
 
           fs.stat target, (err) =>
             if (err) then return callback(null)
