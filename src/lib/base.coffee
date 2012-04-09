@@ -22,10 +22,13 @@ class Base extends EventEmitter
   post = []
 
   constructor: (opt) ->
+
     opt = opt or {}
     root = path.resolve(path.dirname(process.argv[1]))
 
     console.log "Initializing Base..."
+
+    @resources = {}
 
     @connect = connect()
 
@@ -33,6 +36,7 @@ class Base extends EventEmitter
       root: root,
       config: "/config",
       controllers: "/controllers",
+      resources: "/resources",
       views: "/views",
       models: "/models",
       public: "/public",
@@ -119,28 +123,30 @@ class Base extends EventEmitter
                 process.nextTick =>
                   controller.post_action(req)
 
-            try
-              controller = require target
-              controller.getBase = => return this
+            #try
+            c = require target
+            controller = new c(this)
 
-              callPreAction ->
-                method = req.method.toLowerCase()
-                method_action = "#{req.action}_#{method}"
+            if !(controller instanceof Base.Controller) then throw "#{name} is not an instance of Base.Controller"
 
-                if controller[method_action]
-                  controller_action = controller["#{req.action}_#{method}"]
+            callPreAction ->
+              method = req.method.toLowerCase()
+              method_action = "#{req.action}_#{method}"
 
-                else if controller[req.action]
-                  controller_action = controller[req.action]
+              if controller[method_action]
+                controller_action = controller["#{req.action}_#{method}"]
 
-                controller_action req, res, (td) =>
-                  tdata = _.extend tdata, td
-                  callback null
-                  process.nextTick callPostAction
-            catch e
-              console.log "Error loading controller:\n",e
-              res.statusCode = 500
-              return res.end "<h1>500 Internal Server Error</h1>"
+              else if controller[req.action]
+                controller_action = controller[req.action]
+
+              controller_action req, res, (td) =>
+                tdata = _.extend tdata, td
+                callback null
+                process.nextTick callPostAction
+            #catch e
+            #console.log "Error loading controller:\n",e
+            #res.statusCode = 500
+            #return res.end "<h1>500 Internal Server Error</h1>"
 
         view: (callback) =>
           target = "#{@options.root}#{@options.views}/#{req.controller}/#{req.action}.#{@options.template_engine}"
@@ -196,5 +202,33 @@ class Base extends EventEmitter
       this._processRequest req, res, next
   
   getConfig: -> configr.get()
+
+  getResource: (name,alias) ->
+    if !alias then alias = name
+    if @resources[alias] then return @resources[alias]
+
+    target = "#{@options.root}#{@options.resources}/#{name}.#{@options.core_language}"
+    
+    try
+      Res = require(target)
+
+      conf = {}
+      if configr.get().resources and configr.get().resources[alias]
+        conf = configr.get().resources[alias]
+
+      r = new Res(this,conf)
+      if !(r instanceof Base.Resource) then throw "#{name} is not an instance of Base.Resource"
+
+      @resources[alias] = r
+
+      @resources[alias].init()
+
+      return @resources[alias]
+
+    catch e
+      console.log "Error loading resource #{name}:\n",e
+
+Base.Controller = require("#{__dirname}/controller.coffee")
+Base.Resource = require("#{__dirname}/resource.coffee")
 
 module.exports = Base

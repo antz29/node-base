@@ -3,14 +3,18 @@ EventEmitter  = require('events').EventEmitter
 
 class Resource extends EventEmitter
 
+  REQUIRED: '*REQ*'
+
   constructor: (base, opt) ->
     opt = opt or {}
     @base = base
-
     @options = _.defaults opt, this.defaults
 
-  getOptions: -> return @options
-  getBase: -> @base
+    for prop, val of @options
+    	do ->
+    		if (val == this.REQUIRED) then throw "#{prop} is a required option for this resource."
+
+  init: ->
 
   defaults: {}
 
