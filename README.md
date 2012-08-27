@@ -1,3 +1,4 @@
+[![build status](https://secure.travis-ci.org/antz29/node-base.png)](http://travis-ci.org/antz29/node-base)
 # node-base - The Base Framework for NodeJS
 
 ## Installation

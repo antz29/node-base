@@ -1,9 +1,9 @@
 {
 	"author": "John Le Drew <jp@antz29.com> (http://antz29.com)",
 	"name": "base",
-	"description": "A lightweight micro web framework that integrates with connect.js",
-	"keywords": ["framework", "api", "web", "mvc", "extensible", "micro", "connect"],
-	"version": "0.4.2",
+	"description": "A lightweight micro web framework that build on connect.js and written in CoffeeScript.",
+	"keywords": ["framework", "coffeescript", "api", "web", "mvc", "extensible", "micro", "connect"],
+	"version": "0.5.0",
 	"homepage": "http://github.com/antz29/node-base",
 	"repository": {
 		"type": "git",
